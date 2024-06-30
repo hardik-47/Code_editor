@@ -5,6 +5,10 @@ import toast from 'react-hot-toast';
 import ACTIONS from '../Actions';
 import Client from '../components/client';
 import Editor from '../components/editor';
+import { ColorRing } from 'react-loader-spinner'
+import axios from "axios"
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 import { initSocket } from '../socket';
 import {
     useLocation,
@@ -20,6 +24,20 @@ const EditorPage = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    const[codeOutput,setOutput]=useState(['']);
+    const [loadingState,setLoadingState]=useState(false);
+    const [selectedLanguage,setLanguage]=useState('JavaScript');
+
+    const options = [
+        'JavaScript', 'Python', 'C','Cpp'
+      ];
+      const code={
+        JavaScript:'17',
+        Python:'5',
+        C:'6',
+        Cpp:'7'
+      }
+      const defaultOption = options[0];
 
     useEffect(() => {
         const init = async () => {
@@ -86,6 +104,50 @@ const EditorPage = () => {
         }
     }
 
+    // code compiling function
+    function compileCode(){
+        setOutput([''])
+        // console.log(selectedLanguage)
+        // console.log(code[`${selectedLanguage}`])
+        if(codeRef.current){
+        var options = {
+            method: 'POST',
+            url: 'https://code-compiler.p.rapidapi.com/v2',
+            headers: {
+              'content-type': 'application/x-www-form-urlencoded',
+              'x-rapidapi-host': 'code-compiler.p.rapidapi.com',
+              'x-rapidapi-key': 'b8132d3cb6mshe151c16cb42d60ep184351jsn6303b76a5a06'
+            },
+            data: {LanguageChoice:code[`${selectedLanguage}`],
+               Program: `${codeRef.current}`}
+              
+              
+              
+              
+          };
+          
+          axios.request(options).then(function (response) {
+            setLoadingState(false)
+            
+            if(!response.data.Errors){
+                if(response.data.Result){
+                   let arro=response.data.Result.split('\n')
+                   setOutput(arro)
+                }
+
+            }else{
+                // console.log(response.data);
+                setOutput(['error',response.data.Errors])
+            }
+          }).catch(function (error) {
+            setOutput("Server error")
+            console.error(error);
+          });
+          setLoadingState(true)
+        }
+
+    }
+
     function leaveRoom() {
         reactNavigator('/');
     }
@@ -93,7 +155,13 @@ const EditorPage = () => {
     if (!location.state) {
         return <Navigate to="/" />;
     }
+     
 
+    function chnageLang(e){
+        // console.log(e.value)
+        setLanguage(e.value)
+
+    }
     return (
         <div className="mainWrap">
             <div className="aside">
@@ -115,6 +183,10 @@ const EditorPage = () => {
                         ))}
                     </div>
                 </div>
+
+                <Dropdown options={options} onChange={chnageLang} value={defaultOption} placeholder="Select Language" className='dropdown'/>
+                
+                <button className='btn runCode' onClick={compileCode}>Run Code</button>
                 <button className="btn copyBtn" onClick={copyRoomId}>
                     Copy ROOM ID
                 </button>
@@ -130,7 +202,31 @@ const EditorPage = () => {
                         codeRef.current = code;
                     }}
                 />
+                <div className="code-output">
+
+
+                    <h1>Output:</h1>
+{loadingState?
+                    <ColorRing
+  visible={true}
+  height="80"
+  width="80"
+  ariaLabel="color-ring-loading"
+  wrapperStyle={{}}
+  wrapperClass="color-ring-wrapper"
+  colors={['#024059', '#026873', '#04BF8A', '#025940', '#03A64A']}
+  />
+:<></>}
+                    
+                        {codeOutput[0]==='error'?<span className='codeOutputError'>{codeOutput[1]}</span>:codeOutput.map((el,i)=>{
+                        return <p className='codeOutput' key={i}>{el}</p>
+
+                        })}
+                    
+
+                 </div>
             </div>
+            
         </div>
     );
 };

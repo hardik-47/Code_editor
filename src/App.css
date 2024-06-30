@@ -91,6 +91,7 @@ footer a:hover {
 
 .mainWrap {
   display: grid;
+  
   grid-template-columns: 230px 1fr;
 }
 
@@ -136,8 +137,52 @@ footer a:hover {
   margin-top: 20px;
 }
 .CodeMirror {
-  min-height: calc(100vh - 20px);
+  min-height:68vh;
   font-size: 20px;
   line-height: 1.6;
   padding-top: 20px;
+  overflow-x: scroll;
+}
+
+.runCode{
+  background-color: #1f683b;
+  margin-bottom:20px;
+  color: white;
+  
+}
+
+.code-output{
+  height:29vh;
+  width:100%;
+  padding: 0px;
+  overflow-y: scroll;
+}
+.code-output h1{
+  margin:5px 10px;
+  color:white;
+}
+/* 
+.editorWrap{
+  height:80vh;
+} */
+
+
+.codeOutput{
+  color: white;
+  font-weight: lighter;
+  margin:5px 20px;
+  font-size:18px;
+}
+.codeOutputError{
+
+  color: red;
+  font-weight: lighter;
+  margin:5px 20px;
+  font-size:18px;
+
+}
+
+.dropdown{
+  margin-bottom:10px;
+  background-color: #1f683b;
 }
