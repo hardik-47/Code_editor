@@ -169,8 +169,8 @@ const EditorPage = () => {
                     <div className="logo">
                         <img
                             className="logoImage"
-                            src="/code-sync.png"
-                            alt="logo"
+                             src="/icon.png"
+                             alt="code-sync-logo"
                         />
                     </div>
                     <h3>Connected</h3>
