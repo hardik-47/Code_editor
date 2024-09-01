@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Codemirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/dracula.css';
@@ -7,8 +7,21 @@ import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
 import ACTIONS from '../Actions';
 
-const Editor = ({ socketRef, roomId, onCodeChange }) => {
+const Editor = ({ socketRef, roomId, username, onCodeChange }) => {
     const editorRef = useRef(null);
+    const [TypingStatus,setTypingStatus]=useState('');
+
+    const handleEditorChange = (value) => {
+        // Notify the parent component of code changes
+        onCodeChange(value);
+
+        // Emit a 'typing' event to the server
+        socketRef.current.emit('TYPING', {
+            roomId,
+            username, // Replace with actual username
+        });
+    };
+
     useEffect(() => {
         async function init() {
             editorRef.current = Codemirror.fromTextArea(
@@ -51,7 +64,28 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         };
     }, [socketRef.current]);
 
-    return <textarea id="realtimeEditor"></textarea>;
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.on('USER_TYPING', ({ username }) => {
+                setTypingStatus(`${username} is typing...`);
+        
+                // Clear the typing status after a timeout (e.g., 2 seconds)
+                setTimeout(() => {
+                    setTypingStatus('');
+                }, 2000);
+            });
+        }
+        else{
+            console.error("Socket connection is not established.");
+        }
+        return () => {
+            socketRef.current.off('USER_TYPING');
+        };
+    }, [socketRef.current]);
+
+    
+
+    return <textarea id="realtimeEditor" onChange={handleEditorChange }></textarea>;
 };
 
 export default Editor;

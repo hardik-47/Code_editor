@@ -42,7 +42,7 @@ const Home = () => {
                     src="/icon.png"
                     alt="code-sync-logo"
                 />
-                <h4 className="mainLabel">Paste invitation ROOM ID</h4>
+                <h4 className="mainLabel">Paste invitation in ROOM ID</h4>
                 <div className="inputGroup">
                     <input
                         type="text"
