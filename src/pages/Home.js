@@ -37,11 +37,14 @@ const Home = () => {
     return (
         <div className="homePageWrapper">
             <div className="formWrapper">
+                <div className="container">
                 <img
                     className="homePageLogo"
                     src="/icon.png"
                     alt="code-sync-logo"
                 />
+                <h1>CodeTogether</h1>
+                </div>
                 <h4 className="mainLabel">Paste invitation ROOM ID</h4>
                 <div className="inputGroup">
                     <input

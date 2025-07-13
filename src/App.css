@@ -186,3 +186,16 @@ footer a:hover {
   margin-bottom:10px;
   background-color: #1f683b;
 }
+
+.container{
+   display: flex;
+}
+.container h1{
+   margin: 20px 30px 30px 30px;
+   color: #4aed88;
+}
+
+.container h3{
+   margin: 20px 30px 30px 10px;
+   color: #4aed88;
+}
